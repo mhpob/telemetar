@@ -8,9 +8,15 @@ Authors@R:
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Imports:
+    data.table,
+    qs,
+    rvdat,
+    tarchetypes,
     targets (>= 1.4.0)
 Suggests: 
     testthat (>= 3.0.0)
+Remotes:
+    mhpob/rvdat
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
