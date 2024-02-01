@@ -31,7 +31,7 @@ Like the package, the name is a work in progress: [vote for your favorite or sug
 -   `trackets`
 
 ## Installing
-If you'd like to give what has been put together a whirl, install the current version of this package from GitHub.
+If you'd like to give what has been put together a whirl, install the current version of this package from GitHub. **However, please know that everything is completely experimental -- functions will be frequently changed, renamed, broken, or not work at all!**
 
 ```{r, eval=FALSE}
 remotes::install_github("mhpob/telemetar")
@@ -72,5 +72,11 @@ Now, the importing step and any further analyses that depend on our detection da
 
 ```{r}
 targets::tar_make()
+```
+
+
+```{r, clean-up, echo=FALSE}
+unlink('_targets.R')
+unlink('targets', recursive = TRUE)
 ```
 

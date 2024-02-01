@@ -34,7 +34,9 @@ candidates:
 ## Installing
 
 If you’d like to give what has been put together a whirl, install the
-current version of this package from GitHub.
+current version of this package from GitHub. **However, please know that
+everything is completely experimental – functions will be frequently
+changed, renamed, broken, or not work at all!**
 
 ``` r
 remotes::install_github("mhpob/telemetar")
@@ -69,9 +71,9 @@ targets::tar_make()
 #> ● completed branch tracked_fa2b2caf [0 seconds]
 #> ● completed pattern tracked
 #> ▶ dispatched branch data_986aead1
-#> ● completed branch data_986aead1 [0.016 seconds]
+#> ● completed branch data_986aead1 [0.047 seconds]
 #> ● completed pattern data
-#> ▶ completed pipeline [0.453 seconds]
+#> ▶ completed pipeline [2.016 seconds]
 ```
 
 ``` r
@@ -116,5 +118,5 @@ targets::tar_make()
 #> ✔ skipped pattern tracked
 #> ✔ skipped branch data_986aead1
 #> ✔ skipped pattern data
-#> ✔ skipped pipeline [0.282 seconds]
+#> ✔ skipped pipeline [0.594 seconds]
 ```
