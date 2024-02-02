@@ -1,20 +1,60 @@
 #'
 #' @export
-tar_vue_csvs <- function(csv_dirs){
-  #if one dir, batch
-  # if >1,
+tar_vue_csvs <- function(
+    name,
+    csv_dirs,
+    batches = length(list.dirs(csv_dirs)),
+    format = c("file", "file_fast", "url", "aws_file"),
+    repository = targets::tar_option_get("repository"),
+    iteration = targets::tar_option_get("iteration"),
+    error = targets::tar_option_get("error"),
+    memory = targets::tar_option_get("memory"),
+    garbage_collection = targets::tar_option_get("garbage_collection"),
+    priority = targets::tar_option_get("priority"),
+    resources = targets::tar_option_get("resources"),
+    cue = targets::tar_option_get("cue")
+){
+  name <- targets::tar_deparse_language(substitute(name))
+  name_files <- paste0(name, '_files')
+  sym_files <- as.symbol(name_files)
+
+  dirs <- list.dirs(csv_dirs)
+
+
+  # If all files are in one folder, batch it into groups of 10 or fewer
+  if(length(dirs) == 1){
+    batches <-  ceiling(
+      length(
+        list.files(csv_dirs, recursive = TRUE)
+      ) / 10
+    )
+  } else {
+    # or use the sub-directories as batches
+    ### TBD: loop the batching above on subdirs to have 10 or fewer files?
+    batches <- length(dirs)
+  }
+
+
+
 
   track_files <-
     tarchetypes::tar_files_input_raw(
-      name = 'tracked',
-      files = csv_dirs
+      name = name_files,
+      files = dirs,
+      batches = batches
     )
 
+  # name_tracked_sym <- as.symbol(name)
   read_files <-
     targets::tar_target_raw(
-      name = 'data',
-      command = quote(telemetar:::csv_read_in(tracked)),
-      pattern = quote(map(tracked)),
+      name = name,
+      command = substitute(
+        telemetar:::csv_read_in(files),
+        env = list(files = sym_files)
+      ),
+      pattern = as.expression(
+        tarchetypes:::call_function("map", list(sym_files))
+        ),
       format = 'qs'
     )
   list(track_files, read_files)
@@ -45,6 +85,5 @@ csv_read_in <- function(csv_dir){
     detections
   }
 }
-
 
 
