@@ -15,7 +15,7 @@ tar_vue_csvs <- function(
     cue = targets::tar_option_get("cue")
 ){
   name <- targets::tar_deparse_language(substitute(name))
-  name_files <- paste0(name, '_files')
+  name_files <- paste0(name, '_tracked')
   sym_files <- as.symbol(name_files)
 
   dirs <- list.dirs(csv_dirs)
@@ -36,7 +36,6 @@ tar_vue_csvs <- function(
 
 
 
-
   track_files <-
     tarchetypes::tar_files_input_raw(
       name = name_files,
@@ -44,23 +43,24 @@ tar_vue_csvs <- function(
       batches = batches
     )
 
-  # name_tracked_sym <- as.symbol(name)
   read_files <-
     targets::tar_target_raw(
       name = name,
       command = substitute(
-        telemetar:::csv_read_in(files),
-        env = list(files = sym_files)
+        csv_read_in(files),
+        env = list(csv_read_in = csv_read_in,
+                   files = sym_files)
       ),
       pattern = as.expression(
         tarchetypes:::call_function("map", list(sym_files))
         ),
       format = 'qs'
     )
+
   list(track_files, read_files)
 }
 
-
+### read-in function
 csv_read_in <- function(csv_dir){
   detections <- list.files(csv_dir, full.names = T, pattern = '^VR.*\\.csv')
 
@@ -85,5 +85,3 @@ csv_read_in <- function(csv_dir){
     detections
   }
 }
-
-
