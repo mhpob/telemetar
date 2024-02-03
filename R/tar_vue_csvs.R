@@ -23,11 +23,11 @@ tar_vue_csvs <- function(
 
   # If all files are in one folder, batch it into groups of 10 or fewer
   if(length(dirs) == 1){
+    dirs <- list.files(csv_dirs, recursive = TRUE)
     batches <-  ceiling(
-      length(
-        list.files(csv_dirs, recursive = TRUE)
-      ) / 10
+      length(dirs) / 10
     )
+
   } else {
     # or use the sub-directories as batches
     ### TBD: loop the batching above on subdirs to have 10 or fewer files?
