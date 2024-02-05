@@ -3,7 +3,8 @@
 tar_vue_csvs <- function(
     name,
     csv_dirs,
-    batches = length(list.dirs(csv_dirs)),
+    pattern = "[VH]R.*\\.csv$",
+    batches = NULL,
     format = c("file", "file_fast", "url", "aws_file"),
     repository = targets::tar_option_get("repository"),
     iteration = targets::tar_option_get("iteration"),
@@ -15,31 +16,25 @@ tar_vue_csvs <- function(
     cue = targets::tar_option_get("cue")
 ){
   name <- targets::tar_deparse_language(substitute(name))
-  name_files <- paste0(name, '_tracked')
+  name_files <- paste0(name, '_csv')
   sym_files <- as.symbol(name_files)
 
-  dirs <- list.dirs(csv_dirs)
+  # Recursively list files
+  csv_files <- list.files(csv_dirs, pattern = pattern,
+                          recursive = TRUE, full.names = TRUE) |>
+    unique()
 
 
-  # If all files are in one folder, batch it into groups of 10 or fewer
-  if(length(dirs) == 1){
-    dirs <- list.files(csv_dirs, recursive = TRUE, full.names = TRUE)
-    batches <-  ceiling(
-      length(dirs) / 10
-    )
+  # Batch into groups of 10 or fewer
+  batches <-  ceiling(
+    length(csv_files) / 10
+  )
 
-  } else {
-    # or use the sub-directories as batches
-    ### TBD: loop the batching above on subdirs to have 10 or fewer files?
-    batches <- length(dirs)
-  }
-
-
-
+  # Create the target factory
   track_files <-
     tarchetypes::tar_files_input_raw(
       name = name_files,
-      files = dirs,
+      files = csv_files,
       batches = batches
     )
 
@@ -53,40 +48,31 @@ tar_vue_csvs <- function(
       ),
       pattern = as.expression(
         tarchetypes:::call_function("map", list(sym_files))
-        ),
+      ),
       format = 'qs'
     )
 
+  # Export targets
   list(track_files, read_files)
 }
 
-### read-in function
-## NOTES TO FIX!!
-# _tracked_files is a list('dir1', 'dir2') if input csv_dirs is a dir with subdirs
-#   its a list(c(bunch, of, files), c(bunch, of, files)) if a dir with files
-#     this causes the process to break when listing files in first line of csv_read_in
-
-csv_read_in <- function(csv_dir){
-  detections <- list.files(csv_dir, full.names = T, pattern = '^VR.*\\.csv')
-
-  if(length(csv_dir) == 0){
-    data.table::data.table()
-  } else {
-    # Read files into the elements of a list
-    detections <- lapply(
-      detections,
-      data.table::fread,
-      fill = T,
-      # rename columns
-      col.names = function(x){
-        tolower(gsub('and|UTC|[) (\\.]', '', x))
-      }
-    )
 
 
-    # Bind list together into a data.table
-    detections <- data.table::rbindlist(detections)
-
-    detections
-  }
+#' Read-in function
+#'
+#' @param csv_batch a batch of vdat CSV files
+#'
+#' @keywords internal
+csv_read_in <- function(csv_batch){
+  # Read files into the elements of a list
+  lapply(
+    csv_batch,
+    data.table::fread,
+    fill = T,
+    # rename columns
+    col.names = function(x){
+      tolower(gsub('and|UTC|[) (\\.]', '', x))
+    }
+  ) |>
+    data.table::rbindlist()
 }
