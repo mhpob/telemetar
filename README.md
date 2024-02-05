@@ -9,6 +9,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/telemetar)](https://CRAN.R-project.org/package=telemetar)
+[![telemetar status
+badge](https://mhpob.r-universe.dev/badges/telemetar)](https://mhpob.r-universe.dev/telemetar)
 [![R-CMD-check](https://github.com/mhpob/telemetar/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mhpob/telemetar/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -35,11 +37,26 @@ candidates:
 ## Installing
 
 If you’d like to give what has been put together a whirl, install the
-current version of this package from GitHub. **However, please know that
-everything is completely experimental – functions will be frequently
-changed, renamed, broken, or not work at all!**
+current version of this package from R-Universe or GitHub. **However,
+please know that everything is completely experimental – functions will
+be frequently changed, renamed, broken, or not work at all!**
+
+R-universe:
 
 ``` r
+install.packages(
+  "telemetar",
+  repos = c(
+    "https://mhpob.r-universe.dev",
+    "https://cloud.r-project.org"
+  )
+)
+```
+
+GitHub:
+
+``` r
+# install.packages("remotes")
 remotes::install_github("mhpob/telemetar")
 ```
 
@@ -87,9 +104,9 @@ targets::tar_make()
 #> ● completed branch my_data_csv_df58d0e9 [0 seconds]
 #> ● completed pattern my_data_csv
 #> ▶ dispatched branch my_data_31709a7f
-#> ● completed branch my_data_31709a7f [0.188 seconds]
+#> ● completed branch my_data_31709a7f [0.531 seconds]
 #> ● completed pattern my_data
-#> ▶ completed pipeline [0.828 seconds]
+#> ▶ completed pipeline [1.672 seconds]
 ```
 
 ``` r
@@ -134,5 +151,5 @@ targets::tar_make()
 #> ✔ skipped pattern my_data_csv
 #> ✔ skipped branch my_data_31709a7f
 #> ✔ skipped pattern my_data
-#> ✔ skipped pipeline [0.11 seconds]
+#> ✔ skipped pipeline [0.344 seconds]
 ```

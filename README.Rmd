@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/telemetar)](https://CRAN.R-project.org/package=telemetar)
+[![telemetar status badge](https://mhpob.r-universe.dev/badges/telemetar)](https://mhpob.r-universe.dev/telemetar)
 [![R-CMD-check](https://github.com/mhpob/telemetar/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mhpob/telemetar/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -32,9 +33,22 @@ Like the package, the name is a work in progress: [vote for your favorite or sug
 -   `trackets`
 
 ## Installing
-If you'd like to give what has been put together a whirl, install the current version of this package from GitHub. **However, please know that everything is completely experimental -- functions will be frequently changed, renamed, broken, or not work at all!**
+If you'd like to give what has been put together a whirl, install the current version of this package from R-Universe or GitHub. **However, please know that everything is completely experimental -- functions will be frequently changed, renamed, broken, or not work at all!**
 
-```{r, eval=FALSE}
+R-universe:
+```{r eval=FALSE}
+install.packages(
+  "telemetar",
+  repos = c(
+    "https://mhpob.r-universe.dev",
+    "https://cloud.r-project.org"
+  )
+)
+```
+
+GitHub:
+```{r eval=FALSE}
+# install.packages("remotes")
 remotes::install_github("mhpob/telemetar")
 ```
 
