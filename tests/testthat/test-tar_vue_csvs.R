@@ -1,4 +1,6 @@
 targets::tar_test("all files in one dir (to rule them all)", {
+  skip_if_offline()
+
   ## Download example data
   dir.create('td')
   download.file(
@@ -28,28 +30,32 @@ targets::tar_test("all files in one dir (to rule them all)", {
 
   out <- targets::tar_manifest()
 
-  expect_equal(out$name, "my_detections")
-  expect_equal(out$pattern, "map(my_detections_tracked)")
-  expect_true(grepl('csv_dir', out$command))
+  expect_equal(out$name,
+               c("my_detections_csv_files", "my_detections_csv", "my_detections"))
+  expect_equal(out$pattern,
+               c(NA, "map(my_detections_csv_files)", "map(my_detections_csv)"))
+  expect_true(all(sapply(list.files('td'),grepl, out$command[1])))
 
   # Branching works
   expect_false(any(is.na(tar_branch_names(my_detections, 1:2))))
   expect_true(is.na(tar_branch_names(my_detections, 3)))
 
   # Correct types
-  md <- targets::tar_load(my_detections)
+  md <- targets::tar_read(my_detections)
   expect_s3_class(md, c('data.table', 'data.frame'), exact = TRUE)
   expect_named(md, c('datetime', 'receiver', 'transmitter', 'transmittername',
                      'transmitterserial', 'sensorvalue', 'sensorunit',
                      'stationname', 'latitude', 'longitude'))
 
-  md_files <- targets::tar_read(my_detections_tracked)
-  expect_length(md_files, 3)
+  md_files <- targets::tar_read(my_detections_csv)
+  expect_length(md_files, 12)
   expect_type(md_files, 'character')
 
-  md_files_list <- targets::tar_read(my_detections_tracked_files)
-  expect_length(md_files_list, 3)
+  md_files_list <- targets::tar_read(my_detections_csv_files)
+  expect_length(md_files_list, 2)
   expect_type(md_files_list, 'list')
+  expect_length(md_files_list[[1]], 6)
+  expect_length(md_files_list[[2]], 6)
 
 
   # unlink('td', recursive = TRUE) # only needed for interactive testing
@@ -59,6 +65,8 @@ targets::tar_test("all files in one dir (to rule them all)", {
 
 
 targets::tar_test("files in separate dirs (in the darkness bind them)", {
+  skip_if_offline()
+
   ## Download example data
   dir.create('td/td2/td3', recursive = TRUE)
   download.file(
@@ -96,28 +104,29 @@ targets::tar_test("files in separate dirs (in the darkness bind them)", {
   out <- targets::tar_manifest(my_detections)
 
   expect_equal(out$name, "my_detections")
-  expect_equal(out$pattern, "map(my_detections_tracked)")
-  expect_true(grepl('csv_dir', out$command))
+  expect_equal(out$pattern, "map(my_detections_csv)")
+  expect_true(grepl('csv_batch', out$command))
 
   # Branching works
-  expect_false(any(is.na(tar_branch_names(my_detections, 1:3))))
-  expect_true(is.na(tar_branch_names(my_detections, 4)))
+  expect_false(any(is.na(tar_branch_names(my_detections, 1:2))))
+  expect_true(is.na(tar_branch_names(my_detections, 3)))
 
   # Correct types
-  md <- targets::tar_load(my_detections)
+  md <- targets::tar_read(my_detections)
   expect_s3_class(md, c('data.table', 'data.frame'), exact = TRUE)
   expect_named(md, c('datetime', 'receiver', 'transmitter', 'transmittername',
                       'transmitterserial', 'sensorvalue', 'sensorunit',
                       'stationname', 'latitude', 'longitude'))
 
-  md_files <- targets::tar_read(my_detections_tracked)
-  expect_length(md_files, 3)
+  md_files <- targets::tar_read(my_detections_csv)
+  expect_length(md_files, 13)
   expect_type(md_files, 'character')
 
-  md_files_list <- targets::tar_read(my_detections_tracked_files)
-  expect_length(md_files_list, 3)
+  md_files_list <- targets::tar_read(my_detections_csv_files)
+  expect_length(md_files_list, 2)
   expect_type(md_files_list, 'list')
-
+  expect_length(md_files_list[[1]], 7)
+  expect_length(md_files_list[[2]], 6)
 
   # unlink('td', recursive = TRUE) # only needed for interactive testing
 })
