@@ -1,9 +1,46 @@
+#' Dynamic branching over VUE/VDAT-exported CSV detection files.
+#'
+#' @inheritParams tarchetypes::tar_files_input
+#' @param csv_dirs 	Nonempty character vector of known existing directories of
+#'  CSV files to track for changes.
+#' @param pattern a regular expression to search for the applicable CSV files.
+#'  Defaults to "`^[VH]R.*\\.csv$`".
+#' @param batches Positive integer of length 1, number of batches to partition the
+#'  files. The default is ten files per batch.
+#'
+#' @examples
+#' td <- file.path(tempdir(), 'td')
+#' dir.create(td)
+#' download.file(
+#'   file.path('https://raw.githubusercontent.com/ocean-tracking-network/glatos',
+#'             'main/inst/extdata/VR2W_109924_20110718_1.csv'),
+#'   file.path(td, 'VR2W_109924_20110718_1.csv')
+#' )
+#' for(i in 2:12){
+#'   file.copy(
+#'     'td/VR2W_109924_20110718_1.csv',
+#'     paste0(file.path(td, 'VR2W_109924_20110718_'), i, '.csv')
+#'   )
+#' }
+#'
+#' ## Run workflow
+#' targets::tar_script(
+#'   list(
+#'     telemetar::tar_vue_csvs(
+#'       my_detections,
+#'       'td'
+#'     )
+#'   )
+#' )
+#' targets::tar_make(callr_function = NULL)
+#'
+#' unlink(td, recursive = TRUE)
 #'
 #' @export
 tar_vue_csvs <- function(
     name,
     csv_dirs,
-    pattern = "[VH]R.*\\.csv$",
+    pattern = "^[VH]R.*\\.csv$",
     batches = NULL,
     format = c("file", "file_fast", "url", "aws_file"),
     repository = targets::tar_option_get("repository"),
