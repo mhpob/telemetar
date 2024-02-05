@@ -18,9 +18,10 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/telemetar)](https://CRAN.R-project.org/package=telemetar)
+[![R-CMD-check](https://github.com/mhpob/telemetar/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mhpob/telemetar/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-This package aims to provide [`targets`](https://docs.ropensci.org/targets/) archetypes for analysis of fish acoustic telemetry data *a la* the [`tarchetypes`](https://docs.ropensci.org/tarchetypes/) package. The eventual hope is to play nicely with, or even become a part of, the [R Targetopia](https://wlandau.github.io/targetopia/); if you'd like to contribute please follow the [Targetopia development guidelines](https://wlandau.github.io/targetopia/contributing.html).
+This package aims to provide [`targets`](https://docs.ropensci.org/targets/) archetypes for analysis of fish acoustic telemetry data *a la* the [`tarchetypes`](https://docs.ropensci.org/tarchetypes/) package. The eventual hope is to play nicely with the [R Targetopia](https://wlandau.github.io/targetopia/); if you'd like to contribute please follow the [Targetopia development guidelines](https://wlandau.github.io/targetopia/contributing.html).
 
 Like the package, the name is a work in progress: [vote for your favorite or suggest another name here](https://github.com/mhpob/telemetar/discussions/2)! Some candidates:
 
@@ -38,7 +39,17 @@ remotes::install_github("mhpob/telemetar")
 ```
 
 ## Reading and combining VUE CSVs
-`tar_vue_csvs` takes a directory of VUE-exported CSVs, tracks them for changes, and imports the relevant data. This assumes that your data is housed in a series of sub-directories. Something like:
+`tar_vue_csvs` takes a directory of VUE-exported CSVs, tracks them for changes, and imports the relevant data. This assumes that your data is housed within a directory or series of sub-directories. Something like:
+
+```
+project_detections/
+  |-- receiver1_jan.csv
+  |-- receiver2_jan.csv
+  |-- receiver1_march.csv
+  |-- receiver2_march.csv
+```
+
+**OR** something like:
 
 ```
 project_detections/
@@ -51,13 +62,25 @@ project_detections/
       |-- receiver2_march.csv
 ```
 
+```{r}
+library(targets)
+library(telemetar)
+```
+
+
+```{r, remove-stuff, echo=FALSE}
+targets::tar_destroy(ask = FALSE)
+```
+
 
 ```{r}
 targets::tar_script({
   library(telemetar)
   
-  tar_vue_csvs('c:/users/darpa2/analysis/chesapeake-backbone/embargo/raw')
-})
+  tar_vue_csvs(
+    my_data,
+    'c:/users/darpa2/analysis/chesapeake-backbone/embargo/raw')
+}, ask = FALSE)
 
 targets::tar_make()
 ```
@@ -65,7 +88,7 @@ targets::tar_make()
 ```{r}
 targets::tar_objects()
 
-head(targets::tar_read(data))
+head(targets::tar_read(my_data))
 ```
 
 Now, the importing step and any further analyses that depend on our detection data will only be run if a file in that directory (or sub-directories) is added or removed.

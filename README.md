@@ -9,13 +9,14 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/telemetar)](https://CRAN.R-project.org/package=telemetar)
+[![R-CMD-check](https://github.com/mhpob/telemetar/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mhpob/telemetar/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This package aims to provide
 [`targets`](https://docs.ropensci.org/targets/) archetypes for analysis
 of fish acoustic telemetry data *a la* the
 [`tarchetypes`](https://docs.ropensci.org/tarchetypes/) package. The
-eventual hope is to play nicely with, or even become a part of, the [R
+eventual hope is to play nicely with the [R
 Targetopia](https://wlandau.github.io/targetopia/); if you’d like to
 contribute please follow the [Targetopia development
 guidelines](https://wlandau.github.io/targetopia/contributing.html).
@@ -46,7 +47,15 @@ remotes::install_github("mhpob/telemetar")
 
 `tar_vue_csvs` takes a directory of VUE-exported CSVs, tracks them for
 changes, and imports the relevant data. This assumes that your data is
-housed in a series of sub-directories. Something like:
+housed within a directory or series of sub-directories. Something like:
+
+    project_detections/
+      |-- receiver1_jan.csv
+      |-- receiver2_jan.csv
+      |-- receiver1_march.csv
+      |-- receiver2_march.csv
+
+**OR** something like:
 
     project_detections/
       |
@@ -58,45 +67,52 @@ housed in a series of sub-directories. Something like:
           |-- receiver2_march.csv
 
 ``` r
+library(targets)
+library(telemetar)
+```
+
+``` r
 targets::tar_script({
   library(telemetar)
   
-  tar_vue_csvs('c:/users/darpa2/analysis/chesapeake-backbone/embargo/raw')
-})
+  tar_vue_csvs(
+    my_data,
+    'c:/users/darpa2/analysis/chesapeake-backbone/embargo/raw')
+}, ask = FALSE)
 
 targets::tar_make()
-#> ▶ dispatched target tracked_files
-#> ● completed target tracked_files [0 seconds]
-#> ▶ dispatched branch tracked_fa2b2caf
-#> ● completed branch tracked_fa2b2caf [0 seconds]
-#> ● completed pattern tracked
-#> ▶ dispatched branch data_986aead1
-#> ● completed branch data_986aead1 [0.047 seconds]
-#> ● completed pattern data
-#> ▶ completed pipeline [2.016 seconds]
+#> ▶ dispatched target my_data_csv_files
+#> ● completed target my_data_csv_files [0 seconds]
+#> ▶ dispatched branch my_data_csv_df58d0e9
+#> ● completed branch my_data_csv_df58d0e9 [0 seconds]
+#> ● completed pattern my_data_csv
+#> ▶ dispatched branch my_data_31709a7f
+#> ● completed branch my_data_31709a7f [0.188 seconds]
+#> ● completed pattern my_data
+#> ▶ completed pipeline [0.828 seconds]
 ```
 
 ``` r
 targets::tar_objects()
-#> [1] "data_986aead1" "tracked_files"
+#> [1] "my_data_31709a7f"  "my_data_csv_files"
 
-head(targets::tar_read(data))
+head(targets::tar_read(my_data))
 #>               datetime     receiver    transmitter transmittername
 #>                 <POSc>       <char>         <char>          <lgcl>
-#> 1: 2022-05-04 15:28:58 VR2AR-546323 A69-1601-60787              NA
-#> 2: 2022-05-04 15:39:32 VR2AR-546323 A69-1601-60787              NA
-#> 3: 2022-05-04 15:49:37 VR2AR-546323 A69-1601-60787              NA
-#> 4: 2022-05-04 16:09:11 VR2AR-546323 A69-1601-60787              NA
-#> 5: 2022-05-04 16:18:23 VR2AR-546323 A69-1601-60787              NA
-#> 6: 2022-05-04 16:27:44 VR2AR-546323 A69-1601-60787              NA
+#> 1: 2022-05-04 16:45:50 VR2AR-546211 A69-1601-60675              NA
+#> 2: 2022-05-04 16:55:50 VR2AR-546211 A69-1601-60675              NA
+#> 3: 2022-05-04 17:10:08 VR2AR-546211 A69-1601-60675              NA
+#> 4: 2022-05-04 17:20:28 VR2AR-546211 A69-1601-60921              NA
+#> 5: 2022-05-04 17:20:58 VR2AR-546211 A69-1601-60675              NA
+#> 6: 2022-05-04 17:31:36 VR2AR-546211 A69-1601-60675              NA
 #>    transmitterserial sensorvalue sensorunit stationname latitude longitude
-#>               <lgcl>      <lgcl>     <lgcl>      <lgcl>   <lgcl>    <lgcl>
-#> 1:                NA          NA         NA          NA       NA        NA
-#> 2:                NA          NA         NA          NA       NA        NA
-#> 3:                NA          NA         NA          NA       NA        NA
-#> 4:                NA          NA         NA          NA       NA        NA
-#> 5:                NA          NA         NA          NA       NA        NA
-#> 6:                NA          NA         NA          NA       NA        NA
+#>               <lgcl>       <int>     <char>      <char>   <lgcl>    <lgcl>
+#> 1:                NA          NA       <NA>         CP3       NA        NA
+#> 2:                NA          NA       <NA>         CP3       NA        NA
+#> 3:                NA          NA       <NA>         CP3       NA        NA
+#> 4:                NA          NA       <NA>         CP3       NA        NA
+#> 5:                NA          NA       <NA>         CP3       NA        NA
+#> 6:                NA          NA       <NA>         CP3       NA        NA
 #>    transmittertype sensorprecision
 #>             <lgcl>          <lgcl>
 #> 1:              NA              NA
@@ -113,10 +129,10 @@ sub-directories) is added or removed.
 
 ``` r
 targets::tar_make()
-#> ✔ skipped target tracked_files
-#> ✔ skipped branch tracked_fa2b2caf
-#> ✔ skipped pattern tracked
-#> ✔ skipped branch data_986aead1
-#> ✔ skipped pattern data
-#> ✔ skipped pipeline [0.594 seconds]
+#> ✔ skipped target my_data_csv_files
+#> ✔ skipped branch my_data_csv_df58d0e9
+#> ✔ skipped pattern my_data_csv
+#> ✔ skipped branch my_data_31709a7f
+#> ✔ skipped pattern my_data
+#> ✔ skipped pipeline [0.11 seconds]
 ```
