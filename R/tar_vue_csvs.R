@@ -9,32 +9,35 @@
 #'  files. The default is ten files per batch.
 #'
 #' @examples
-#' td <- file.path(tempdir(), 'td')
-#' dir.create(td)
-#' download.file(
-#'   file.path('https://raw.githubusercontent.com/ocean-tracking-network/glatos',
-#'             'main/inst/extdata/VR2W_109924_20110718_1.csv'),
-#'   file.path(td, 'VR2W_109924_20110718_1.csv')
-#' )
-#' for(i in 2:12){
-#'   file.copy(
-#'     'td/VR2W_109924_20110718_1.csv',
-#'     paste0(file.path(td, 'VR2W_109924_20110718_'), i, '.csv')
-#'   )
-#' }
 #'
-#' ## Run workflow
-#' targets::tar_script(
-#'   list(
-#'     telemetar::tar_vue_csvs(
-#'       my_detections,
-#'       'td'
+#' targets::tar_dir({
+#'   ## Download example data
+#'   download.file(
+#'     file.path('https://raw.githubusercontent.com/ocean-tracking-network/glatos',
+#'               'main/inst/extdata/VR2W_109924_20110718_1.csv'),
+#'     'VR2W_109924_20110718_1.csv'
+#'   )
+#'
+#'   for(i in 2:12){
+#'     file.copy(
+#'       'VR2W_109924_20110718_1.csv',
+#'       paste0('VR2W_109924_20110718_', i, '.csv')
 #'     )
-#'   )
-#' )
-#' targets::tar_make(callr_function = NULL)
+#'   }
 #'
-#' unlink(td, recursive = TRUE)
+#'   ## Run workflow
+#'   targets::tar_script({
+#'     list(
+#'       telemetar::tar_vue_csvs(
+#'         my_detections,
+#'         getwd()
+#'       )
+#'     )
+#'   })
+#'
+#'   targets::tar_make(callr_function = NULL)
+#'
+#' })
 #'
 #' @export
 tar_vue_csvs <- function(
