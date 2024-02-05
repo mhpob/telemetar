@@ -14,6 +14,7 @@ Imports:
     tarchetypes,
     targets (>= 1.4.0)
 Suggests: 
+    curl,
     testthat (>= 3.0.0)
 Remotes:
     mhpob/rvdat
