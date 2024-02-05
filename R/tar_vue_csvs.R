@@ -23,7 +23,7 @@ tar_vue_csvs <- function(
 
   # If all files are in one folder, batch it into groups of 10 or fewer
   if(length(dirs) == 1){
-    dirs <- list.files(csv_dirs, recursive = TRUE)
+    dirs <- list.files(csv_dirs, recursive = TRUE, full.names = TRUE)
     batches <-  ceiling(
       length(dirs) / 10
     )
@@ -61,6 +61,11 @@ tar_vue_csvs <- function(
 }
 
 ### read-in function
+## NOTES TO FIX!!
+# _tracked_files is a list('dir1', 'dir2') if input csv_dirs is a dir with subdirs
+#   its a list(c(bunch, of, files), c(bunch, of, files)) if a dir with files
+#     this causes the process to break when listing files in first line of csv_read_in
+
 csv_read_in <- function(csv_dir){
   detections <- list.files(csv_dir, full.names = T, pattern = '^VR.*\\.csv')
 
