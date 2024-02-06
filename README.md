@@ -156,4 +156,22 @@ targets::tar_make()
 
 It also creates some useful dependency graphs:
 
-`{mermaid} graph LR   style Legend fill:#FFFFFF00,stroke:#000000;   style Graph fill:#FFFFFF00,stroke:#000000;   subgraph Legend     direction LR     x7420bd9270f8d27d([""Up to date""]):::uptodate --- x70a5fa6bea6f298d[""Pattern""]:::none     x70a5fa6bea6f298d[""Pattern""]:::none --- xbf4603d6c2c2ad6b([""Stem""]):::none   end   subgraph Graph     direction LR     x64b07e2cac016b40["my_data_csv"]:::uptodate --> x73409720373a417b["my_data"]:::uptodate     xb4d62d808d86535c(["my_data_csv_files"]):::uptodate --> x64b07e2cac016b40["my_data_csv"]:::uptodate   end   classDef uptodate stroke:#000000,color:#ffffff,fill:#354823;   classDef none stroke:#000000,color:#000000,fill:#94a4ac;   linkStyle 0 stroke-width:0px;   linkStyle 1 stroke-width:0px;`
+``` {mermaid}
+graph LR
+   style Legend fill:#FFFFFF00,stroke:#000000;
+   style Graph fill:#FFFFFF00,stroke:#000000;
+   subgraph Legend
+     direction LR
+     x7420bd9270f8d27d([""Up to date""]):::uptodate --- x70a5fa6bea6f298d[""Pattern""]:::none
+     x70a5fa6bea6f298d[""Pattern""]:::none --- xbf4603d6c2c2ad6b([""Stem""]):::none
+   end
+   subgraph Graph
+     direction LR
+     x64b07e2cac016b40["my_data_csv"]:::uptodate --> x73409720373a417b["my_data"]:::uptodate
+     xb4d62d808d86535c(["my_data_csv_files"]):::uptodate --> x64b07e2cac016b40["my_data_csv"]:::uptodate
+   end
+   classDef uptodate stroke:#000000,color:#ffffff,fill:#354823;
+   classDef none stroke:#000000,color:#000000,fill:#94a4ac;
+   linkStyle 0 stroke-width:0px;
+   linkStyle 1 stroke-width:0px;
+```
