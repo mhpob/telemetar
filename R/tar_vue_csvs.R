@@ -67,9 +67,7 @@ tar_vue_csvs <- function(
 
   # Batch into groups of 10 or fewer
   if(is.null(batches)){
-    batches <-  ceiling(
-      length(csv_files) / 10
-    )
+    batches <- file_batcher(files = csv_files, batch_size = 10)
   }
 
   # Create the target factory

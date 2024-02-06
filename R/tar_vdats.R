@@ -4,14 +4,14 @@
 #' @inheritParams tar_vue_csvs
 #' @param vdat_dirs Nonempty character vector of known existing directories of
 #'  VDAT files to track for changes.
-#' @param pattern a regular expression to search for the applicable CSV files.
-#'  Defaults to "`^[VH]R.{2,3}_.*(\\.vrl|\\.vdat)$`".
+#'
+#' @examples
+#' # example code
 #'
 #' @export
 tar_vdat_read <- function(
     name,
     vdat_dirs,
-    pattern = "^[VH]R.{2,3}_.*(\\.vrl|\\.vdat)$",
     batches = NULL,
     format = c("file", "file_fast", "url", "aws_file"),
     repository = targets::tar_option_get("repository"),
@@ -21,7 +21,22 @@ tar_vdat_read <- function(
     garbage_collection = targets::tar_option_get("garbage_collection"),
     priority = targets::tar_option_get("priority"),
     resources = targets::tar_option_get("resources"),
-    cue = targets::tar_option_get("cue")){
+    cue = targets::tar_option_get("cue")
+){
+  name <- targets::tar_deparse_language(substitute(name))
+  name_files <- paste0(name, '_csv')
+  sym_files <- as.symbol(name_files)
+
+  # Recursively list files
+  vdat_files <- list.files(vdat_dirs, pattern = "\\.(vrl|vdat)$",
+                          recursive = TRUE, full.names = TRUE) |>
+    unique()
+  # Drop RLD files
+  vdat_files <- vdat_files[!grepl('-RLD_', vdat_files)]
+
+  if(is.null(batches)) {
+    batches <- file_batcher(files = vdat_files, batch_size = 10)
+  }
 
   track_vdat <-
     tarchetypes::tar_files_input_raw(
@@ -51,6 +66,9 @@ tar_vdat_read <- function(
 
 
 #' @export
+
+#Notes to self:
+# look at csv_read_in and adapt
 tar_vdat_dir <- function(vdat_dir){
   vdats <- list.files(vdat_dir, full.names = T,
                       pattern = '^[VH]R.{2,3}_.*(\\.vrl|\\.vdat)')

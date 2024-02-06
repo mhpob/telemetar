@@ -7,7 +7,6 @@
 tar_vdat_read(
   name,
   vdat_dirs,
-  pattern = "^[VH]R.{2,3}_.*(\\\\.vrl|\\\\.vdat)$",
   batches = NULL,
   format = c("file", "file_fast", "url", "aws_file"),
   repository = targets::tar_option_get("repository"),
@@ -39,9 +38,6 @@ on the result to locally recreate the target's initial RNG state.}
 
 \item{vdat_dirs}{Nonempty character vector of known existing directories of
 VDAT files to track for changes.}
-
-\item{pattern}{a regular expression to search for the applicable CSV files.
-Defaults to "\verb{^[VH]R.\{2,3\}_.*(\\\\.vrl|\\\\.vdat)$}".}
 
 \item{batches}{Positive integer of length 1, number of batches to partition the
 files. The default is ten files per batch.}
@@ -131,4 +127,8 @@ Only applies to the downstream target. The upstream target always runs.}
 }
 \description{
 Dynamic branching over VDAT files
+}
+\examples{
+# example code
+
 }
