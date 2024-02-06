@@ -12,6 +12,7 @@
 tar_vdat_read <- function(
     name,
     vdat_dirs,
+    batch_size = 10,
     batches = NULL,
     format = c("file", "file_fast", "url", "aws_file"),
     repository = targets::tar_option_get("repository"),
@@ -31,12 +32,11 @@ tar_vdat_read <- function(
   vdat_files <- list.files(vdat_dirs, pattern = "\\.(vrl|vdat)$",
                           recursive = TRUE, full.names = TRUE) |>
     unique()
+
   # Drop RLD files
   vdat_files <- vdat_files[!grepl('-RLD_', vdat_files)]
 
-  if(is.null(batches)) {
-    batches <- file_batcher(files = vdat_files, batch_size = 10)
-  }
+  batches <- file_batcher(files = vdat_files, batch_size = 10)
 
   track_vdat <-
     tarchetypes::tar_files_input_raw(

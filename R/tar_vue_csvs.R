@@ -5,8 +5,8 @@
 #'  CSV files to track for changes.
 #' @param pattern a regular expression to search for the applicable CSV files.
 #'  Defaults to "`^[VH]R.*\\.csv$`".
-#' @param batches Positive integer of length 1, number of batches to partition the
-#'  files. The default is ten files per batch.
+#' @param batch_size Positive integer of length 1, number of files to partition
+#'  into a batch. The default is ten files per batch.
 #'
 #' @examples
 #'
@@ -44,7 +44,7 @@ tar_vue_csvs <- function(
     name,
     csv_dirs,
     pattern = "^[VH]R.*\\.csv$",
-    batches = NULL,
+    batch_size = 10,
     format = c("file", "file_fast", "url", "aws_file"),
     repository = targets::tar_option_get("repository"),
     iteration = targets::tar_option_get("iteration"),
@@ -66,9 +66,7 @@ tar_vue_csvs <- function(
 
 
   # Batch into groups of 10 or fewer
-  if(is.null(batches)){
-    batches <- file_batcher(files = csv_files, batch_size = 10)
-  }
+  batches <- file_batcher(files = csv_files, batch_size = batch_size)
 
   # Create the target factory
   track_files <-

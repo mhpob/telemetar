@@ -8,7 +8,7 @@ tar_vue_csvs(
   name,
   csv_dirs,
   pattern = "^[VH]R.*\\\\.csv$",
-  batches = NULL,
+  batch_size = 10,
   format = c("file", "file_fast", "url", "aws_file"),
   repository = targets::tar_option_get("repository"),
   iteration = targets::tar_option_get("iteration"),
@@ -43,8 +43,8 @@ CSV files to track for changes.}
 \item{pattern}{a regular expression to search for the applicable CSV files.
 Defaults to "\verb{^[VH]R.*\\\\.csv$}".}
 
-\item{batches}{Positive integer of length 1, number of batches to partition the
-files. The default is ten files per batch.}
+\item{batch_size}{Positive integer of length 1, number of files to partition
+into a batch. The default is ten files per batch.}
 
 \item{format}{Character, either \code{"file"}, \code{"file_fast"}, or \code{"url"}.
 See the \code{format} argument of \code{targets::tar_target()} for details.}
