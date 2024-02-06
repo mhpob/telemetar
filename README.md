@@ -156,7 +156,7 @@ targets::tar_make()
 
 It also creates some useful dependency graphs:
 
-``` {mermaid}
+``` mermaid
 graph LR
    style Legend fill:#FFFFFF00,stroke:#000000;
    style Graph fill:#FFFFFF00,stroke:#000000;
