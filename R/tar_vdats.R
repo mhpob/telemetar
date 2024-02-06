@@ -47,7 +47,8 @@ tar_vdat_read <- function(
     tarchetypes::tar_files_input_raw(
       name = name_files,
       files = vdat_files,
-      batches = batches
+      batches = batches,
+      format = 'file_fast'
     )
 
 
@@ -59,10 +60,11 @@ tar_vdat_read <- function(
     targets::tar_target_raw(
       name = name_csv,
       command = substitute(
-        tar_vdat_dir(files),
+        tar_vdat_dir(files, outdir),
         env = list(
           tar_vdat_dir = tar_vdat_dir,
-          files = sym_files
+          files = sym_files,
+          outdir = csv_outdir
         )
       ),
       pattern = as.expression(
@@ -75,7 +77,7 @@ tar_vdat_read <- function(
   ## Read
   sym_csv <- as.symbol(name_csv)
 
-  read_files <-
+  read_vdat <-
     targets::tar_target_raw(
       name = name,
       command = substitute(
@@ -113,8 +115,8 @@ tar_vdat_dir <- function(vdat_batch, csv_outdir){
     )
   }
 
-  list.dirs(csv_outdir)
-
+  directory_list <- list.dirs(csv_outdir)
+  directory_list[grepl('split$', directory_list)]
 }
 
 
