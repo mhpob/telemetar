@@ -104,9 +104,9 @@ targets::tar_make()
 #> ● completed branch my_data_csv_df58d0e9 [0 seconds]
 #> ● completed pattern my_data_csv
 #> ▶ dispatched branch my_data_31709a7f
-#> ● completed branch my_data_31709a7f [0.531 seconds]
+#> ● completed branch my_data_31709a7f [0.156 seconds]
 #> ● completed pattern my_data
-#> ▶ completed pipeline [1.672 seconds]
+#> ▶ completed pipeline [0.593 seconds]
 ```
 
 ``` r
@@ -151,5 +151,9 @@ targets::tar_make()
 #> ✔ skipped pattern my_data_csv
 #> ✔ skipped branch my_data_31709a7f
 #> ✔ skipped pattern my_data
-#> ✔ skipped pipeline [0.344 seconds]
+#> ✔ skipped pipeline [0.156 seconds]
 ```
+
+It also creates some useful dependency graphs:
+
+`{mermaid} graph LR   style Legend fill:#FFFFFF00,stroke:#000000;   style Graph fill:#FFFFFF00,stroke:#000000;   subgraph Legend     direction LR     x7420bd9270f8d27d([""Up to date""]):::uptodate --- x70a5fa6bea6f298d[""Pattern""]:::none     x70a5fa6bea6f298d[""Pattern""]:::none --- xbf4603d6c2c2ad6b([""Stem""]):::none   end   subgraph Graph     direction LR     x64b07e2cac016b40["my_data_csv"]:::uptodate --> x73409720373a417b["my_data"]:::uptodate     xb4d62d808d86535c(["my_data_csv_files"]):::uptodate --> x64b07e2cac016b40["my_data_csv"]:::uptodate   end   classDef uptodate stroke:#000000,color:#ffffff,fill:#354823;   classDef none stroke:#000000,color:#000000,fill:#94a4ac;   linkStyle 0 stroke-width:0px;   linkStyle 1 stroke-width:0px;`

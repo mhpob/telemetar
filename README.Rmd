@@ -111,6 +111,11 @@ Now, the importing step and any further analyses that depend on our detection da
 targets::tar_make()
 ```
 
+It also creates some useful dependency graphs:
+
+```{r, results = "asis", echo = FALSE}
+cat(c("```{mermaid}", targets::tar_mermaid(), "```"), sep = "\n")
+```
 
 ```{r, clean-up, echo=FALSE}
 unlink('_targets.R')
