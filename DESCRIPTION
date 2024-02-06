@@ -12,7 +12,8 @@ Imports:
     qs,
     rvdat,
     tarchetypes,
-    targets (>= 1.4.0)
+    targets (>= 1.4.0),
+    utils
 Suggests: 
     curl,
     testthat (>= 3.0.0)

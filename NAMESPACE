@@ -3,3 +3,4 @@
 export(tar_vdat_dir)
 export(tar_vdat_read)
 export(tar_vue_csvs)
+importFrom(utils,getFromNamespace)
