@@ -25,40 +25,68 @@ tar_vdat_read <- function(
     cue = targets::tar_option_get("cue")
 ){
   name <- targets::tar_deparse_language(substitute(name))
-  name_files <- paste0(name, '_csv')
-  sym_files <- as.symbol(name_files)
 
-  # Recursively list files
+  # List unique files
+  ## Recursively list files
   vdat_files <- list.files(vdat_dirs, pattern = "\\.(vrl|vdat)$",
-                          recursive = TRUE, full.names = TRUE) |>
+                           recursive = TRUE, full.names = TRUE) |>
     unique()
 
-  # Drop RLD files
+  ## Drop RLD files
   vdat_files <- vdat_files[!grepl('-RLD_', vdat_files)]
 
-  batches <- file_batcher(files = vdat_files, batch_size = 10)
+  # Batch files
+  batches <- file_batcher(files = vdat_files, batch_size = batch_size)
+
+  # Create the target factory
+  ## Track
+  name_files <- paste0(name, '_vdat')
 
   track_vdat <-
     tarchetypes::tar_files_input_raw(
-      name = 'tracked',
-      files = vrl_dirs
+      name = name_files,
+      files = vdat_files,
+      batches = batches
     )
+
+  ## Convert
+  sym_files <- as.symbol(name_files)
+  name_csv <- paste0(name, '_csv')
 
   convert_vdat <-
     targets::tar_target_raw(
-      name = "vdat_csv",
-      command = quote(telemetar::tar_vdat_dir(tracked)),
-      pattern = quote(map(tracked)),
+      name = name_csv,
+      command = substitute(
+        tar_vdat_dir(files),
+        env = list(
+          tar_vdat_dir = tar_vdat_dir,
+          files = sym_files
+        )
+      ),
+      pattern = as.expression(
+        call_function("map", list(sym_files))
+      ),
       format = 'qs'
     )
 
-  read_vdat <-
+  ## Read
+  sym_csv <- as.symbol(name_csv)
+
+  read_files <-
     targets::tar_target_raw(
-      name = 'data',
-      command = quote(telemetar:::vrl_read_in(vdat_csv)),
-      pattern = quote(map(vdat_csv)),
+      name = name,
+      command = substitute(
+        vdat_read_in(files),
+        env = list(vdat_read_in = vdat_read_in,
+                   files = sym_csv)
+      ),
+      pattern = as.expression(
+        tarchetypes:::call_function("map", list(sym_csv))
+      ),
       format = 'qs'
     )
+
+  # Export target factory
   list(track_vdat, convert_vdat, read_vdat)
 }
 
@@ -80,7 +108,7 @@ tar_vdat_dir <- function(vdat_dir){
 
 
 
-vrl_read_in <- function(vrl_dir){
+vdat_read_in <- function(vrl_dir){
   vrls <- list.files(vrl_dir, full.names = T,
                      pattern = '^[VH]R.{2,3}_.*(\\.vrl|\\.vdat)')
 
