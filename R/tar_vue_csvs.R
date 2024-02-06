@@ -8,6 +8,7 @@
 #' @param batch_size Positive integer of length 1, number of files to partition
 #'  into a batch. The default is ten files per batch.
 #'
+#'
 #' @examples
 #'
 #' targets::tar_dir({
@@ -85,7 +86,7 @@ tar_vue_csvs <- function(
                    files = sym_files)
       ),
       pattern = as.expression(
-        tarchetypes:::call_function("map", list(sym_files))
+        call_function("map", list(sym_files))
       ),
       format = 'qs'
     )
