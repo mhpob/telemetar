@@ -12,6 +12,7 @@
 tar_vdat_read <- function(
     name,
     vdat_dirs,
+    csv_outdir,
     batch_size = 10,
     batches = NULL,
     format = c("file", "file_fast", "url", "aws_file"),
@@ -94,20 +95,23 @@ tar_vdat_read <- function(
 
 
 #' @export
+tar_vdat_dir <- function(vdat_batch, csv_outdir){
+  # Read files into the elements of a list
+  for(i in seq_along(vdat_batch)){
+    rvdat::vdat_to_folder(
+      vdata_file = vdat_batch[i],
+      outdir = csv_outdir,
+      quiet = TRUE
+    )
+  }
 
-#Notes to self:
-# look at csv_read_in and adapt
-tar_vdat_dir <- function(vdat_dir){
-  vdats <- list.files(vdat_dir, full.names = T,
-                      pattern = '^[VH]R.{2,3}_.*(\\.vrl|\\.vdat)')
-  ## parse vrl, read, qs the list for each file?
-  td <- file.path(tempdir(), '')
-  rvdat::vdat_to_folder(vdat_dir,)
+  list.files(csv_outdir)
 
 }
 
 
-
+#Notes to self:
+# look at csv_read_in and adapt
 vdat_read_in <- function(vrl_dir){
   vrls <- list.files(vrl_dir, full.names = T,
                      pattern = '^[VH]R.{2,3}_.*(\\.vrl|\\.vdat)')
