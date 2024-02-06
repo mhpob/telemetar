@@ -7,6 +7,7 @@
 tar_vdat_read(
   name,
   vdat_dirs,
+  csv_outdir,
   batch_size = 10,
   batches = NULL,
   format = c("file", "file_fast", "url", "aws_file"),
