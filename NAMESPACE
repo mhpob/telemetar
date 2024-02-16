@@ -2,4 +2,5 @@
 
 export(tar_vdat_read)
 export(tar_vue_csvs)
+importFrom(qs,qsave)
 importFrom(utils,getFromNamespace)

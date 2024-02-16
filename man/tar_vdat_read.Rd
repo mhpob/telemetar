@@ -41,8 +41,17 @@ on the result to locally recreate the target's initial RNG state.}
 \item{vdat_dirs}{Nonempty character vector of known existing directories of
 VDAT files to track for changes.}
 
+\item{csv_outdir}{file path to the output directory}
+
 \item{batch_size}{Positive integer of length 1, number of files to partition
 into a batch. The default is ten files per batch.}
+
+\item{batches}{Positive integer of length 1, number of batches
+to partition the files. The default is one file per batch
+(maximum number of batches) which is simplest to handle but
+could cause a lot of overhead and consume a lot of computing resources.
+Consider reducing the number of batches below the number of files
+for heavy workloads.}
 
 \item{format}{Character, either \code{"file"}, \code{"file_fast"}, or \code{"url"}.
 See the \code{format} argument of \code{targets::tar_target()} for details.}

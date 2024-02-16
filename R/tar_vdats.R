@@ -2,12 +2,15 @@
 #'
 #'
 #' @inheritParams tar_vue_csvs
+#' @inheritParams tarchetypes::tar_files_input
 #' @param vdat_dirs Nonempty character vector of known existing directories of
 #'  VDAT files to track for changes.
+#' @param csv_outdir file path to the output directory
 #'
 #' @examples
 #' # example code
 #'
+#' @importFrom qs qsave
 #' @export
 tar_vdat_read <- function(
     name,

@@ -40,6 +40,7 @@
 #'
 #' })
 #'
+#' @importFrom qs qsave
 #' @export
 tar_vue_csvs <- function(
     name,
