@@ -1,4 +1,4 @@
-#' Functions borrowed from [`tarchetypes`]
+#' Functions borrowed from [`tarchetypes`](https://docs.ropensci.org/tarchetypes/)
 #'
 #' @importFrom utils getFromNamespace
 #'

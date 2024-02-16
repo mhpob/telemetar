@@ -2,12 +2,12 @@
 % Please edit documentation in R/borrowed_functions.R
 \name{call_function}
 \alias{call_function}
-\title{Functions borrowed from \code{\link{tarchetypes}}}
+\title{Functions borrowed from \href{https://docs.ropensci.org/tarchetypes/}{\code{tarchetypes}}}
 \usage{
 call_function(name, args)
 }
 \description{
-Functions borrowed from \code{\link{tarchetypes}}
+Functions borrowed from \href{https://docs.ropensci.org/tarchetypes/}{\code{tarchetypes}}
 }
 \keyword{borrowed}
 \keyword{internal}
