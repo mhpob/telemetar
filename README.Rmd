@@ -114,7 +114,7 @@ targets::tar_make()
 It also creates some useful dependency graphs:
 
 ```{r, results = "asis", echo = FALSE}
-cat(c("```{mermaid}", targets::tar_mermaid(), "```"), sep = "\n")
+cat(c("``` mermaid", targets::tar_mermaid(), "```"), sep = "\n")
 ```
 
 ```{r, clean-up, echo=FALSE}
